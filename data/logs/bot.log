@@ -1,0 +1,444 @@
+2026-07-14 23:35:12,408 [src.pipeline.database] INFO: Database initialised at data\secondbrain.db
+2026-07-14 23:35:12,412 [src.pipeline.database] INFO: Database initialised at data\secondbrain.db
+2026-07-14 23:35:12,413 [src.pipeline.processor] INFO: Pipeline initialised (max_concurrent_jobs=5)
+2026-07-14 23:35:12,419 [src.api.server] WARNING: DASHBOARD_TOKEN is not set — unauthenticated local access only.
+2026-07-14 23:35:12,429 [src.api.server] INFO: Dashboard API server started on http://127.0.0.1:8080
+2026-07-14 23:35:13,036 [src.bot.bot] INFO: Starting Second Brain Telegram bot...
+2026-07-14 23:35:13,544 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:35:13,545 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:35:13,546 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:35:13,548 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:35:13,548 [src.bot.daily_digest] INFO: Scheduled: daily digest 08:00 UTC, weekly Sunday 19:00 UTC, midnight reprocess 00:05 UTC, Notion archive reconcile every 5 min
+2026-07-14 23:35:13,548 [src.bot.bot] INFO: Bot handlers registered successfully
+2026-07-14 23:35:13,671 [src.bot.bot] WARNING: Bot initialization failed (attempt 1/5): httpx.ConnectError:  — retrying in 5s
+2026-07-14 23:35:18,831 [src.bot.bot] WARNING: Bot initialization failed (attempt 2/5): httpx.ConnectError:  — retrying in 10s
+2026-07-14 23:35:29,218 [src.categorizer.providers] WARNING: API key health check: groq_2 is unreachable
+2026-07-14 23:35:29,218 [src.categorizer.providers] INFO: API key health check: 4/5 keys ok (2 gemini, 3 groq configured)
+2026-07-14 23:35:29,618 [apscheduler.scheduler] INFO: Added job "daily_digest" to job store "default"
+2026-07-14 23:35:29,618 [apscheduler.scheduler] INFO: Added job "weekly_summary" to job store "default"
+2026-07-14 23:35:29,619 [apscheduler.scheduler] INFO: Added job "midnight_reprocess" to job store "default"
+2026-07-14 23:35:29,619 [apscheduler.scheduler] INFO: Added job "notion_archive_reconcile" to job store "default"
+2026-07-14 23:35:29,619 [apscheduler.scheduler] INFO: Scheduler started
+2026-07-14 23:35:29,620 [telegram.ext.Application] INFO: Application started
+2026-07-14 23:35:29,649 [src.bot.bot] INFO: Bot is now polling for updates — press Ctrl+C to stop
+2026-07-14 23:36:13,555 [apscheduler.executors.default] INFO: Running job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:41:13 UTC)" (scheduled at 2026-07-14 22:36:13.546174+00:00)
+2026-07-14 23:36:14,495 [apscheduler.executors.default] INFO: Job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:41:13 UTC)" executed successfully
+2026-07-14 23:37:21,032 [src.pipeline.database] INFO: Database initialised at data\secondbrain.db
+2026-07-14 23:37:21,036 [src.pipeline.database] INFO: Database initialised at data\secondbrain.db
+2026-07-14 23:37:21,037 [src.pipeline.processor] INFO: Pipeline initialised (max_concurrent_jobs=5)
+2026-07-14 23:37:21,055 [src.api.server] WARNING: DASHBOARD_TOKEN is not set — unauthenticated local access only.
+2026-07-14 23:37:21,066 [src.api.server] INFO: Dashboard API server started on http://127.0.0.1:8080
+2026-07-14 23:37:21,739 [src.bot.bot] INFO: Starting Second Brain Telegram bot...
+2026-07-14 23:37:22,161 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:37:22,162 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:37:22,162 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:37:22,164 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:37:22,164 [src.bot.daily_digest] INFO: Scheduled: daily digest 08:00 UTC, weekly Sunday 19:00 UTC, midnight reprocess 00:05 UTC, Notion archive reconcile every 5 min
+2026-07-14 23:37:22,165 [src.bot.bot] INFO: Bot handlers registered successfully
+2026-07-14 23:37:22,566 [src.categorizer.providers] WARNING: API key health check: groq_2 is unreachable
+2026-07-14 23:37:22,566 [src.categorizer.providers] INFO: API key health check: 4/5 keys ok (2 gemini, 3 groq configured)
+2026-07-14 23:37:22,789 [apscheduler.scheduler] INFO: Added job "daily_digest" to job store "default"
+2026-07-14 23:37:22,789 [apscheduler.scheduler] INFO: Added job "weekly_summary" to job store "default"
+2026-07-14 23:37:22,790 [apscheduler.scheduler] INFO: Added job "midnight_reprocess" to job store "default"
+2026-07-14 23:37:22,790 [apscheduler.scheduler] INFO: Added job "notion_archive_reconcile" to job store "default"
+2026-07-14 23:37:22,790 [apscheduler.scheduler] INFO: Scheduler started
+2026-07-14 23:37:22,790 [telegram.ext.Application] INFO: Application started
+2026-07-14 23:37:22,824 [src.bot.bot] INFO: Bot is now polling for updates — press Ctrl+C to stop
+2026-07-14 23:37:22,871 [telegram.ext.Updater] ERROR: Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 216, in handle_async_request
+    raise exc from None
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 196, in handle_async_request
+    response = await connection.handle_async_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 99, in handle_async_request
+    raise exc
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 76, in handle_async_request
+    stream = await self._connect(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 154, in _connect
+    stream = await stream.start_tls(**kwargs)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_backends\anyio.py", line 66, in start_tls
+    with map_exceptions(exc_map):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 154, in do_action
+    action_cb_task.result()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 4865, in get_updates
+    await self._post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 704, in _post
+    return await self._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 733, in _do_post
+    result = await request.post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.ConnectError: 
+2026-07-14 23:37:24,003 [telegram.ext.Updater] ERROR: Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 216, in handle_async_request
+    raise exc from None
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 196, in handle_async_request
+    response = await connection.handle_async_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 99, in handle_async_request
+    raise exc
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 76, in handle_async_request
+    stream = await self._connect(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 154, in _connect
+    stream = await stream.start_tls(**kwargs)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_backends\anyio.py", line 66, in start_tls
+    with map_exceptions(exc_map):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 154, in do_action
+    action_cb_task.result()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 4865, in get_updates
+    await self._post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 704, in _post
+    return await self._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 733, in _do_post
+    result = await request.post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.ConnectError: 
+2026-07-14 23:37:25,560 [telegram.ext.Updater] ERROR: Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 216, in handle_async_request
+    raise exc from None
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 196, in handle_async_request
+    response = await connection.handle_async_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 99, in handle_async_request
+    raise exc
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 76, in handle_async_request
+    stream = await self._connect(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 154, in _connect
+    stream = await stream.start_tls(**kwargs)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_backends\anyio.py", line 66, in start_tls
+    with map_exceptions(exc_map):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 154, in do_action
+    action_cb_task.result()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 4865, in get_updates
+    await self._post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 704, in _post
+    return await self._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 733, in _do_post
+    result = await request.post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.ConnectError: 
+2026-07-14 23:37:27,986 [telegram.ext.Updater] ERROR: Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 216, in handle_async_request
+    raise exc from None
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 196, in handle_async_request
+    response = await connection.handle_async_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 99, in handle_async_request
+    raise exc
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 76, in handle_async_request
+    stream = await self._connect(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 154, in _connect
+    stream = await stream.start_tls(**kwargs)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_backends\anyio.py", line 66, in start_tls
+    with map_exceptions(exc_map):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 154, in do_action
+    action_cb_task.result()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 4865, in get_updates
+    await self._post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 704, in _post
+    return await self._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 733, in _do_post
+    result = await request.post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.ConnectError: 
+2026-07-14 23:37:58,216 [src.api.server] INFO: Buckets set for note ea7a82595501 -> ['WATCH-LONG']
+2026-07-14 23:37:58,508 [notion_client] WARNING: request fail: code=validation_error, message=Bucket is not a property that exists., attempt=0, request_id=9975e55a-c235-4dc7-be45-c7226ed5d080
+2026-07-14 23:37:59,565 [src.integrations.notion_sync] INFO: Added 'Bucket' multi_select property to Notion data source 36511e73-e180-8043-b5e6-000b9eca66de
+2026-07-14 23:37:59,995 [src.integrations.notion_sync] INFO: Synced buckets ['WATCH-LONG'] to Notion page 36911e73-e180-811a-82ae-c30e516ae206
+2026-07-14 23:38:22,175 [apscheduler.executors.default] INFO: Running job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:43:22 UTC)" (scheduled at 2026-07-14 22:38:22.163383+00:00)
+2026-07-14 23:38:22,947 [apscheduler.executors.default] INFO: Job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:43:22 UTC)" executed successfully
+2026-07-14 23:43:22,173 [apscheduler.executors.default] INFO: Running job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:48:22 UTC)" (scheduled at 2026-07-14 22:43:22.163383+00:00)
+2026-07-14 23:43:23,039 [apscheduler.executors.default] INFO: Job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:48:22 UTC)" executed successfully
+2026-07-14 23:44:26,066 [src.pipeline.database] INFO: Database initialised at data\secondbrain.db
+2026-07-14 23:44:26,070 [src.pipeline.database] INFO: Database initialised at data\secondbrain.db
+2026-07-14 23:44:26,071 [src.pipeline.processor] INFO: Pipeline initialised (max_concurrent_jobs=5)
+2026-07-14 23:44:26,078 [src.api.server] WARNING: DASHBOARD_TOKEN is not set — unauthenticated local access only.
+2026-07-14 23:44:26,088 [src.api.server] INFO: Dashboard API server started on http://127.0.0.1:8080
+2026-07-14 23:44:26,720 [src.bot.bot] INFO: Starting Second Brain Telegram bot...
+2026-07-14 23:44:27,147 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:44:27,148 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:44:27,148 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:44:27,150 [apscheduler.scheduler] INFO: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-14 23:44:27,150 [src.bot.daily_digest] INFO: Scheduled: daily digest 08:00 UTC, weekly Sunday 19:00 UTC, midnight reprocess 00:05 UTC, Notion archive reconcile every 5 min
+2026-07-14 23:44:27,150 [src.bot.bot] INFO: Bot handlers registered successfully
+2026-07-14 23:44:27,800 [src.categorizer.providers] WARNING: API key health check: groq_2 is invalid
+2026-07-14 23:44:27,800 [src.categorizer.providers] INFO: API key health check: 4/5 keys ok (2 gemini, 3 groq configured)
+2026-07-14 23:44:28,023 [apscheduler.scheduler] INFO: Added job "daily_digest" to job store "default"
+2026-07-14 23:44:28,024 [apscheduler.scheduler] INFO: Added job "weekly_summary" to job store "default"
+2026-07-14 23:44:28,024 [apscheduler.scheduler] INFO: Added job "midnight_reprocess" to job store "default"
+2026-07-14 23:44:28,025 [apscheduler.scheduler] INFO: Added job "notion_archive_reconcile" to job store "default"
+2026-07-14 23:44:28,025 [apscheduler.scheduler] INFO: Scheduler started
+2026-07-14 23:44:28,025 [telegram.ext.Application] INFO: Application started
+2026-07-14 23:44:28,051 [src.bot.bot] INFO: Bot is now polling for updates — press Ctrl+C to stop
+2026-07-14 23:44:28,107 [telegram.ext.Updater] ERROR: Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 216, in handle_async_request
+    raise exc from None
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection_pool.py", line 196, in handle_async_request
+    response = await connection.handle_async_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 99, in handle_async_request
+    raise exc
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 76, in handle_async_request
+    stream = await self._connect(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_async\connection.py", line 154, in _connect
+    stream = await stream.start_tls(**kwargs)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_backends\anyio.py", line 66, in start_tls
+    with map_exceptions(exc_map):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_utils\networkloop.py", line 154, in do_action
+    action_cb_task.result()
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 672, in get_updates
+    updates = await super().get_updates(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 4865, in get_updates
+    await self._post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 704, in _post
+    return await self._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\ext\_extbot.py", line 370, in _do_post
+    return await super()._do_post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\_bot.py", line 733, in _do_post
+    result = await request.post(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+  File "C:\Users\Smit Mehta\AppData\Local\Programs\Python\Python310\lib\site-packages\telegram\request\_httpxrequest.py", line 303, in do_request
+    raise NetworkError(f"httpx.{err.__class__.__name__}: {err}") from err
+telegram.error.NetworkError: httpx.ConnectError: 
+2026-07-14 23:45:27,166 [apscheduler.executors.default] INFO: Running job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:50:27 UTC)" (scheduled at 2026-07-14 22:45:27.149940+00:00)
+2026-07-14 23:45:28,543 [apscheduler.executors.default] INFO: Job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:50:27 UTC)" executed successfully
+2026-07-14 23:50:27,158 [apscheduler.executors.default] INFO: Running job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:55:27 UTC)" (scheduled at 2026-07-14 22:50:27.149940+00:00)
+2026-07-14 23:50:27,878 [apscheduler.executors.default] INFO: Job "notion_archive_reconcile (trigger: interval[0:05:00], next run at: 2026-07-14 22:55:27 UTC)" executed successfully

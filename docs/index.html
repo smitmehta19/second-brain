@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mind Palace</title>
+
+<link rel="stylesheet" href="theme.css">
+
+<style>
+html, body { width: 100%; height: 100%; }
+body {
+  font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  display: flex; flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Atmosphere */
+body::before {
+  background:
+    radial-gradient(ellipse 55% 45% at 20% 12%, rgba(95,231,255,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 38% at 88% 88%, rgba(255,179,106,0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 30% 25% at 50% 50%, rgba(168,141,240,0.04) 0%, transparent 60%);
+}
+
+/* Top bar */
+.topbar {
+  position: relative; z-index: 5;
+  padding: 22px 32px;
+  font-family: var(--font-hud); font-weight: 500; font-size: 12px;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--text-muted);
+  display: flex; justify-content: flex-end; align-items: center;
+  border-bottom: 1px solid var(--rule);
+}
+.topbar .date { color: var(--text-muted); }
+
+/* Centerpiece */
+.hero {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 5; padding: 80px 32px;
+}
+.hero-inner {
+  max-width: 720px; text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+}
+.hero-eyebrow {
+  font-family: var(--font-hud); font-weight: 500; font-size: 12px;
+  letter-spacing: 0.32em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: 36px;
+}
+.hero-eyebrow::before { content: '▣'; margin-right: 12px; }
+.hero-eyebrow::after  { content: '▣'; margin-left: 12px; }
+
+.hero-mark {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 144, 'wght' 400, 'SOFT' 50;
+  font-size: clamp(56px, 9vw, 110px);
+  line-height: 0.96; letter-spacing: -0.04em;
+  color: var(--text-primary); margin-bottom: 6px;
+}
+.hero-mark em {
+  font-style: italic; color: var(--accent);
+  font-variation-settings: 'opsz' 144, 'wght' 400, 'SOFT' 100, 'WONK' 1;
+}
+.hero-rule {
+  width: 80px; height: 1px; background: var(--accent); opacity: 0.5; margin: 32px 0;
+}
+.hero-tagline {
+  font-family: var(--font-hud); font-weight: 500; font-size: 12px;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-secondary);
+  margin-bottom: 56px;
+}
+
+/* Entry grid — 4 entries, 2x2 or 4-col */
+.entries {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px; width: 100%;
+}
+@media (max-width: 900px) { .entries { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .entries { grid-template-columns: 1fr 1fr; } }
+
+.entry {
+  position: relative; padding: 22px 18px 20px;
+  border: 1px solid var(--rule-2);
+  text-align: left; display: block;
+  transition: all 0.2s; cursor: pointer;
+}
+.entry::before, .entry::after,
+.entry .br-tr, .entry .br-bl {
+  content: ''; position: absolute; width: 10px; height: 10px;
+  border: 1px solid var(--accent); opacity: 0.65; transition: opacity 0.2s;
+}
+.entry::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.entry::after  { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+.entry .br-tr  { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+.entry .br-bl  { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+.entry:hover { border-color: var(--accent); background: rgba(95,231,255,0.04); transform: translateY(-2px); }
+.entry:hover::before, .entry:hover::after, .entry:hover .br-tr, .entry:hover .br-bl { opacity: 1; }
+
+.entry-num {
+  font-family: var(--font-hud); font-weight: 600; font-size: 12px;
+  letter-spacing: 0.22em; color: var(--accent); margin-bottom: 10px;
+}
+.entry-name {
+  font-family: var(--font-hud); font-weight: 500; font-size: 16px;
+  letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.entry-desc {
+  font-family: var(--font-body); font-size: 13px; letter-spacing: 0.01em;
+  color: var(--text-muted); line-height: 1.4;
+}
+.entry.primary { border-color: var(--rule-3); }
+.entry.primary::before, .entry.primary::after,
+.entry.primary .br-tr, .entry.primary .br-bl { opacity: 1; }
+.entry.primary .entry-name { color: var(--accent-2); }
+.entry-badge {
+  position: absolute; top: -1px; right: -1px;
+  padding: 3px 8px; background: var(--accent); color: var(--ink-1);
+  font-family: var(--font-hud); font-weight: 600; font-size: 12px;
+  letter-spacing: 0.18em; text-transform: uppercase; line-height: 1;
+}
+
+/* Footer */
+.foot {
+  position: relative; z-index: 5; padding: 24px 32px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-hud); font-weight: 500; font-size: 12px;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-disabled);
+  text-align: center;
+}
+.foot .accent { color: var(--accent); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.hero-eyebrow, .hero-mark, .hero-rule, .hero-tagline, .entries { animation: rise 0.6s ease both; }
+.hero-eyebrow { animation-delay: 0.05s; }
+.hero-mark    { animation-delay: 0.15s; }
+.hero-rule    { animation-delay: 0.25s; }
+.hero-tagline { animation-delay: 0.30s; }
+.entries      { animation-delay: 0.38s; }
+.entry        { animation: rise 0.5s ease both; }
+.entry:nth-child(1) { animation-delay: 0.42s; }
+.entry:nth-child(2) { animation-delay: 0.48s; }
+.entry:nth-child(3) { animation-delay: 0.54s; }
+.entry:nth-child(4) { animation-delay: 0.60s; }
+
+@media (max-width: 480px) {
+  .topbar { padding: 18px 16px; }
+  .hero { padding: 40px 16px; }
+  .foot { padding: 18px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="date" id="date">—</span>
+</div>
+
+<main class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Second brain · Online</div>
+
+    <h1 class="hero-mark">The Mind <em>Palace</em></h1>
+    <div class="hero-rule"></div>
+    <div class="hero-tagline">Dump anything · Find everything</div>
+
+    <nav class="entries">
+      <a class="entry primary" href="review.html">
+        <span class="br-tr"></span><span class="br-bl"></span>
+        <span class="entry-badge">Today</span>
+        <div class="entry-num">&#8470;01</div>
+        <div class="entry-name">Review</div>
+        <div class="entry-desc">Daily inbox queue.</div>
+      </a>
+      <a class="entry" href="bucket.html">
+        <span class="br-tr"></span><span class="br-bl"></span>
+        <div class="entry-num">&#8470;02</div>
+        <div class="entry-name">Buckets</div>
+        <div class="entry-desc">Sorted by use-case.</div>
+      </a>
+      <a class="entry" href="atlas.html">
+        <span class="br-tr"></span><span class="br-bl"></span>
+        <div class="entry-num">&#8470;03</div>
+        <div class="entry-name">Atlas</div>
+        <div class="entry-desc">Daily briefing.</div>
+      </a>
+      <a class="entry" href="mindmap.html">
+        <span class="br-tr"></span><span class="br-bl"></span>
+        <div class="entry-num">&#8470;04</div>
+        <div class="entry-name">Mindmap</div>
+        <div class="entry-desc">In 3D.</div>
+      </a>
+    </nav>
+  </div>
+</main>
+
+<footer class="foot">
+  <span class="accent">·</span>
+</footer>
+
+<script>
+(function(){
+  var d = new Date();
+  var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('date').textContent = months[d.getMonth()] + ' ' + String(d.getDate()).padStart(2,'0') + ', ' + d.getFullYear();
+
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href]');
+    if(!a) return;
+    var href = a.getAttribute('href');
+    if(!href || href.startsWith('#') || href.startsWith('http') || a.target === '_blank') return;
+    e.preventDefault();
+    document.body.classList.add('leaving');
+    setTimeout(function(){ window.location.href = href; }, 240);
+  });
+})();
+</script>
+</body>
+</html>

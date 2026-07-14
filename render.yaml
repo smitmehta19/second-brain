@@ -1,0 +1,17 @@
+services:
+  - type: worker
+    name: secondbrain-bot
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: TELEGRAM_ALLOWED_USERS
+        sync: false
+      - key: OBSIDIAN_VAULT_PATH
+        value: /app/vault
+      - key: DB_PATH
+        value: /app/data/secondbrain.db

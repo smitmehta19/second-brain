@@ -1,0 +1,18 @@
+{
+  "quantum-computing": {
+    "keywords": [
+      "quantum computing"
+    ],
+    "obsidian_folder": "03_Resources/Quantum Computing",
+    "notion_database": "resources",
+    "moc": "MOC - Quantum Computing"
+  },
+  "shopping": {
+    "keywords": [
+      "shopping"
+    ],
+    "obsidian_folder": "03_Resources/Shopping",
+    "notion_database": "resources",
+    "moc": "MOC - Shopping"
+  }
+}

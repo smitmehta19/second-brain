@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mind Palace — 3D Floor Plan</title>
+
+<link rel="stylesheet" href="theme.css">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--ink-1); }
+@keyframes pageIn { to { opacity: 1; } }
+body.leaving { opacity: 0; transition: opacity 0.24s ease; }
+body { color: var(--text-primary); font-family: var(--font-mono); -webkit-font-smoothing: antialiased; opacity: 0; animation: pageIn 0.42s ease forwards; }
+::selection { background: var(--accent); color: var(--ink-1); }
+
+/* body::before and ::after grain/gradient provided by theme.css */
+
+#stage { position: absolute; inset: 0; z-index: 5; cursor: grab; }
+#stage:active { cursor: grabbing; }
+
+/* ─── MASTHEAD (overrides for fixed positioning in full-bleed 3D view) ─── */
+.masthead {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 30;
+  background: linear-gradient(180deg, rgba(3,5,11,0.78) 0%, rgba(3,5,11,0.35) 80%, transparent 100%);
+  border-bottom: none; backdrop-filter: blur(8px);
+}
+.masthead-inner { max-width: 1500px; }
+
+/* ─── OVERLAYS ─── */
+.title-overlay {
+  position: fixed; top: 78px; left: 24px; z-index: 18; pointer-events: none;
+  max-width: 380px; transition: opacity 0.3s ease;
+}
+.title-overlay.faded { opacity: 0.18; }
+.title-overlay .eyebrow {
+  font-family: var(--font-hud); font-weight: 500; font-size: 12px;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: 10px;
+}
+.title-overlay .eyebrow::before { content: '▣ '; }
+.title-overlay h1 {
+  font-family: var(--hud); font-weight: 400;
+  font-size: clamp(22px, 2.8vw, 32px); line-height: 1.1; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--paper);
+}
+.title-overlay h1 em { font-style: normal; color: var(--accent); font-weight: 600; }
+.title-overlay .sub {
+  margin-top: 8px; font-family: var(--font-mono); font-size: 12px;
+  color: var(--text-secondary); line-height: 1.5; max-width: 38ch; letter-spacing: 0.02em;
+}
+
+.compass {
+  position: fixed; bottom: 22px; left: 22px; z-index: 18; pointer-events: none;
+  width: 88px; height: 88px;
+}
+.compass svg { width: 100%; height: 100%; transition: transform 0.2s ease; }
+
+.hud {
+  position: fixed; top: 78px; right: 22px; z-index: 18;
+  pointer-events: none; min-width: 240px;
+  background: rgba(3,5,11,0.65); backdrop-filter: blur(10px);
+  border: 1px solid var(--rule-2); padding: 14px 18px;
+}
+.hud::before, .hud::after {
+  content: ''; position: absolute; width: 8px; height: 8px;
+  border: 1px solid var(--accent); opacity: 0.7;
+}
+.hud::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.hud::after  { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+.hud-head {
+  font-family: var(--font-hud); font-weight: 600; font-size: 12px;
+  letter-spacing: 0.28em; color: var(--accent); margin-bottom: 10px; text-transform: uppercase;
+}
+.hud-head::before { content: '◇ '; }
+.hud .row {
+  display: flex; justify-content: space-between; gap: 14px; padding: 3px 0;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em;
+  color: var(--text-muted); text-transform: uppercase;
+}
+.hud .k { color: var(--text-ghost); }
+.hud .v { color: var(--text-primary); font-weight: 600; }
+.hud .v.hi { color: var(--accent); }
+
+.hint {
+  position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 18;
+  pointer-events: none; font-family: var(--font-hud); font-weight: 500; font-size: 12px;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-ghost);
+  animation: fade-out 12s 6s forwards;
+}
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+.hint .kbd { padding: 2px 6px; margin: 0 4px; border: 1px solid var(--rule-2); color: var(--paper-2); font-family: var(--mono); }
+
+.cm-search {
+  position: fixed; top: 78px; left: 50%; transform: translateX(-50%); z-index: 22;
+  width: 280px; background: rgba(3,5,11,0.78); backdrop-filter: blur(14px);
+  border: 1px solid var(--rule-2);
+  display: flex; align-items: center; padding: 9px 14px; gap: 10px; transition: all 0.2s;
+}
+.cm-search:focus-within { border-color: var(--accent); box-shadow: 0 0 16px var(--accent-dim); }
+.cm-search input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--paper); font-family: var(--mono); font-size: 12px;
+}
+.cm-search input::placeholder { color: var(--paper-4); }
+.cm-search .mark { font-family: var(--font-hud); font-weight: 600; color: var(--accent); font-size: 12px; }
+.cm-search .kbd { font-family: var(--font-mono); font-size: 12px; color: var(--text-ghost); padding: 2px 5px; border: 1px solid var(--rule); }
+
+/* Hex reticle */
+#reticle {
+  position: fixed; z-index: 17; pointer-events: none; width: 0; height: 0; opacity: 0;
+  transition: opacity 0.18s ease;
+}
+#reticle.show { opacity: 1; }
+#reticle svg {
+  position: absolute; top: -32px; left: -32px; width: 64px; height: 64px;
+  animation: spin 14s linear infinite;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.hover-card {
+  position: fixed; z-index: 23; pointer-events: none;
+  background: rgba(3,5,11,0.95); backdrop-filter: blur(10px);
+  border: 1px solid var(--rule-2);
+  padding: 12px 14px; max-width: 320px; opacity: 0; transition: opacity 0.15s ease;
+}
+.hover-card.show { opacity: 1; }
+.hover-card .hc-eyebrow {
+  font-family: var(--font-hud); font-weight: 600; font-size: 12px;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+}
+.hover-card .hc-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; box-shadow: 0 0 6px currentColor; }
+.hover-card .hc-title {
+  font-family: var(--font-hud); font-weight: 500; font-size: 13px;
+  line-height: 1.25; letter-spacing: 0.04em; color: var(--text-primary);
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.hover-card .hc-summary {
+  font-size: 12px; line-height: 1.5; color: var(--text-secondary);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+}
+.hover-card .hc-meta {
+  margin-top: 6px; font-size: 12px; letter-spacing: 0.16em; color: var(--text-muted); text-transform: uppercase;
+}
+
+/* Drawer */
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 440px;
+  background: rgba(7,16,26,0.94); backdrop-filter: blur(22px) saturate(140%);
+  border-left: 1px solid var(--rule-2); z-index: 40;
+  transform: translateX(100%); transition: transform 0.32s cubic-bezier(.2,.8,.2,1);
+  overflow-y: auto; box-shadow: -24px 0 48px rgba(0,0,0,0.6);
+}
+.drawer.open { transform: translateX(0); }
+@media (max-width: 600px) { .drawer { width: 100%; } }
+.drawer-inner { padding: 76px 28px 36px; }
+.drawer-close {
+  position: absolute; top: 18px; right: 22px;
+  background: none; border: 1px solid var(--rule-2); color: var(--text-muted);
+  cursor: pointer; padding: 6px 12px;
+  font-family: var(--font-hud); font-weight: 500; font-size: 12px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+}
+.drawer-close:hover { color: var(--accent); border-color: var(--accent); }
+.drawer-eyebrow {
+  font-family: var(--font-hud); font-weight: 600; font-size: 12px;
+  color: var(--accent); letter-spacing: 0.28em; text-transform: uppercase;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.drawer-eyebrow .dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
+.drawer-title {
+  font-family: var(--font-hud); font-weight: 500; font-size: 20px;
+  letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary);
+  line-height: 1.2; margin-bottom: 18px;
+}
+.drawer-summary {
+  font-size: 13px; line-height: 1.65; color: var(--text-secondary);
+  border-top: 1px dashed var(--rule); padding-top: 16px; margin-bottom: 22px;
+  font-family: var(--font-mono);
+}
+.drawer-section-label {
+  font-family: var(--font-hud); font-weight: 600; font-size: 12px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+}
+.drawer-list { list-style: none; padding: 0; margin: 0 0 22px; counter-reset: tk; }
+.drawer-list li {
+  position: relative; padding: 8px 0 8px 28px;
+  font-size: 13px; line-height: 1.55; color: var(--text-primary);
+  border-bottom: 1px dashed var(--rule); font-family: var(--font-mono);
+  cursor: pointer; transition: color 0.2s;
+}
+.drawer-list li:hover { color: var(--accent); }
+.drawer-list li::before {
+  counter-increment: tk;
+  content: counter(tk, decimal-leading-zero);
+  position: absolute; left: 0; top: 10px;
+  font-family: var(--font-hud); font-weight: 600; font-size: 12px; color: var(--accent);
+}
+.drawer-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.drawer-action {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border: 1px solid var(--rule-2);
+  font-family: var(--font-hud); font-weight: 500; font-size: 12px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-primary); cursor: pointer; text-decoration: none; transition: all 0.2s;
+}
+.drawer-action:hover { color: var(--accent); border-color: var(--accent); }
+
+.cm-empty {
+  position: fixed; inset: 0; z-index: 6; display: flex;
+  align-items: center; justify-content: center; flex-direction: column;
+  pointer-events: none; text-align: center;
+}
+.cm-empty .glyph { font-family: var(--font-hud); font-weight: 300; font-size: 80px; color: var(--text-disabled); line-height: 1; }
+.cm-empty .msg { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); margin-top: 24px; max-width: 42ch; line-height: 1.55; }
+
+@media (max-width: 900px) { .hud { display: none; } .title-overlay { max-width: calc(100% - 48px); } }
+@media (max-width: 768px) {
+  .title-overlay { top: 70px; left: 16px; right: 16px; }
+  .title-overlay h1 { font-size: 22px; }
+  .compass { width: 64px; height: 64px; bottom: 16px; left: 16px; }
+  .cm-search { top: 70px; }
+  .hint { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="masthead-brand" href="index.html" title="Home">
+      <span class="brand-mark">▣</span>
+      <span class="brand-name">THE MIND <em>PALACE</em></span>
+    </a>
+    <nav class="masthead-nav">
+      <a class="mast-link" href="review.html">Review</a>
+      <a class="mast-link" href="bucket.html">Buckets</a>
+      <a class="mast-link" href="atlas.html">Atlas</a>
+      <a class="mast-link active" href="mindmap.html">Mindmap</a>
+    </nav>
+    <div class="credits-wrap">
+      <button class="status-pill" id="creditsBtn" title="AI credits status">
+        <span class="status-dot" id="creditsDot"></span>
+        <span class="status-label">AI</span>
+      </button>
+      <div class="credits-drop bracketed" id="creditsDrop">
+        <span class="br-tr"></span><span class="br-bl"></span>
+        <div class="credits-label">&#9671; AI CREDITS · TODAY</div>
+        <div id="creditsContent"><div style="color:var(--text-disabled);font-size:12px;letter-spacing:0.1em">Loading...</div></div>
+        <div class="credits-footer">
+          <span>Resets midnight UTC</span>
+          <button onclick="fetchCredits()">Refresh</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="title-overlay" id="titleOverlay">
+  <div class="eyebrow">№04 · MIND MAP · 3D</div>
+</div>
+
+<div class="cm-search">
+  <span class="mark">▣</span>
+  <input id="search" placeholder="locate a room or note…" autocomplete="off">
+  <span class="kbd">/</span>
+</div>
+
+<div class="hud">
+  <div class="hud-head">Map · Live</div>
+  <div class="row"><span class="k">Domains</span><span class="v hi" id="hudRooms">—</span></div>
+  <div class="row"><span class="k">Notes</span><span class="v" id="hudObjects">—</span></div>
+  <div class="row"><span class="k">Links</span><span class="v" id="hudDoors">—</span></div>
+  <div class="row"><span class="k">Altitude</span><span class="v" id="hudAlt">—</span></div>
+</div>
+
+<div class="hint">DRAG TO ORBIT · SCROLL TO ZOOM · CLICK A ROOM · <span class="kbd">/</span> SEARCH</div>
+
+<div class="compass">
+  <svg viewBox="0 0 100 100" id="compassSvg">
+    <circle cx="50" cy="50" r="34" fill="none" stroke="rgba(95,231,255,0.45)" stroke-width="0.8"/>
+    <circle cx="50" cy="50" r="28" fill="none" stroke="rgba(95,231,255,0.20)" stroke-width="0.5"/>
+    <polygon points="50,16 56,50 50,42 44,50" fill="rgba(95,231,255,0.85)"/>
+    <polygon points="50,84 44,50 50,58 56,50" fill="rgba(95,231,255,0.35)"/>
+    <line x1="16" y1="50" x2="22" y2="50" stroke="rgba(95,231,255,0.6)" stroke-width="0.8"/>
+    <line x1="78" y1="50" x2="84" y2="50" stroke="rgba(95,231,255,0.6)" stroke-width="0.8"/>
+    <text x="50" y="14" text-anchor="middle" fill="rgba(95,231,255,0.85)" font-family="Orbitron" font-size="8" font-weight="600">N</text>
+    <text x="50" y="94" text-anchor="middle" fill="rgba(95,231,255,0.5)" font-family="Orbitron" font-size="7" font-weight="500">S</text>
+    <text x="12" y="53" text-anchor="middle" fill="rgba(95,231,255,0.5)" font-family="Orbitron" font-size="7" font-weight="500">W</text>
+    <text x="88" y="53" text-anchor="middle" fill="rgba(95,231,255,0.5)" font-family="Orbitron" font-size="7" font-weight="500">E</text>
+  </svg>
+</div>
+
+<div id="reticle">
+  <svg viewBox="0 0 64 64">
+    <polygon points="32,4 56,16 56,48 32,60 8,48 8,16" fill="none" stroke="rgba(95,231,255,0.85)" stroke-width="1.3"/>
+    <polygon points="32,12 50,20 50,44 32,52 14,44 14,20" fill="none" stroke="rgba(95,231,255,0.35)" stroke-width="0.7"/>
+  </svg>
+</div>
+
+<div class="hover-card" id="hoverCard"></div>
+
+<div id="stage"></div>
+
+<aside class="drawer" id="drawer">
+  <div class="drawer-inner">
+    <button class="drawer-close" id="drawerClose">CLOSE ×</button>
+    <div id="drawerContent"></div>
+  </div>
+</aside>
+
+<div class="cm-empty" id="emptyState" style="display:none">
+  <div class="glyph">▢</div>
+  <div class="msg">SURVEY EMPTY · NO ROOMS DETECTED<br>SEND CONTENT TO BEGIN CONSTRUCTION</div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  window.THREE = THREE;
+  window.__OrbitControls = OrbitControls;
+  window.dispatchEvent(new Event('three-ready'));
+</script>
+<script>
+function __startApp(){
+(function(){
+
+var DOMAIN_HUES = {
+  'gen-ai':              '#FF5EA8',  // hot pink
+  'data-engineering':    '#4FA8E0',  // ocean blue
+  'data-science':        '#7CD66A',  // leaf green
+  'computer-science':    '#A88DF0',  // indigo
+  'job-search':          '#FFC857',  // gold
+  'fitness':             '#FF7847',  // orange
+  'cooking':             '#E0CB52',  // mustard
+  'fashion':             '#FF89C9',  // blush pink
+  'personal-finance':    '#5BD9A8',  // mint
+  'wedding':             '#FFB0B5',  // soft rose
+  'politics':            '#9C8BB0',  // muted lavender
+  'ireland':             '#6ACC8C',  // jade
+  'india':               '#FFA04A',  // amber
+  'anime':               '#C66BE0',  // magenta
+  'market-intelligence': '#5FE7FF',  // electric cyan
+  'applied-ai':          '#D880E0',  // bright magenta
+  'quantum-computing':   '#7DD5FF',  // ice blue
+  'evergreen':           '#66E0CB',  // turquoise
+  'recipe-veg':          '#B5C740',  // olive
+  'fashion-tech':        '#FF6B6B',  // coral red
+  'shopping':            '#FFD93D',  // bright yellow
+  'health':              '#5FE0B4',  // sea-mint
+  'career':              '#FFA66B',  // tangerine
+  'travel':              '#7AC9FF',  // sky
+  'productivity':        '#C9E07B',  // chartreuse
+};
+/* Deterministic color from domain name for unknown domains — every new domain
+   gets its own unique, stable hue without us having to add to the map. */
+function hslToHex(h, s, l){
+  l /= 100;
+  var a = s * Math.min(l, 1 - l) / 100;
+  function f(n){
+    var k = (n + h/30) % 12;
+    var col = l - a * Math.max(Math.min(k-3, 9-k, 1), -1);
+    return Math.round(255 * col).toString(16).padStart(2, '0');
+  }
+  return '#' + f(0) + f(8) + f(4);
+}
+function hueFor(d){
+  if(!d) return '#5FE7FF';
+  if(DOMAIN_HUES[d]) return DOMAIN_HUES[d];
+  var h = 0;
+  for(var i = 0; i < d.length; i++) h = ((h << 5) - h + d.charCodeAt(i)) | 0;
+  var hue = Math.abs(h) % 360;
+  var sat = 62 + (Math.abs(h >> 8) % 22);    // 62-84%
+  var lit = 62 + (Math.abs(h >> 16) % 12);   // 62-74%
+  return hslToHex(hue, sat, lit);
+}
+
+var allNotes = [];
+var rooms = [];          // {id, label, count, x, z, w, d, hue, group, notes:[], objects:[]}
+var doorways = [];
+var allObjects = [];     // mesh array for note objects (for raycasting)
+var allRoomMeshes = [];  // mesh array for room floors
+var particles = [];      // {from, to, mid?, sprite, speed, phase, color} — animated traveller sprites
+
+var scene, camera, renderer, controls;
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+var hoverItem = null;
+var idle = true, idleTimer;
+
+var stage = document.getElementById('stage');
+var drawer = document.getElementById('drawer');
+var drawerContent = document.getElementById('drawerContent');
+var titleOverlay = document.getElementById('titleOverlay');
+var hoverCard = document.getElementById('hoverCard');
+var reticle = document.getElementById('reticle');
+var searchEl = document.getElementById('search');
+var compassSvg = document.getElementById('compassSvg');
+
+function esc(s){ if(!s) return ''; var d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
+function notionUrl(id){ if(!id) return ''; return 'https://www.notion.so/' + id.replace(/-/g,''); }
+function relTime(s){
+  var d = new Date(s), diff = Date.now() - d.getTime();
+  if(isNaN(diff)) return '';
+  var sec = Math.floor(diff/1000); if(sec < 60) return 'now';
+  var m = Math.floor(sec/60); if(m < 60) return m + 'm';
+  var h = Math.floor(m/60); if(h < 24) return h + 'h';
+  var dd = Math.floor(h/24); if(dd < 7) return dd + 'd';
+  if(dd < 30) return Math.floor(dd/7) + 'w';
+  return Math.floor(dd/30) + 'mo';
+}
+
+/* ─── LAYOUT: radial mind map.
+   - Center hub at origin.
+   - Each DOMAIN is a node placed on a Fibonacci sphere (evenly spread in 3D).
+   - Each NOTE is a small node clustered around its parent domain.
+   - Edges: center→domain (bright), domain→note (dim), note↔note (warm, only if 2+ shared tags).
+*/
+function buildPalaceLayout(notes){
+  var byDomain = {};
+  notes.forEach(function(n){
+    var d = (n.domains || [])[0] || 'general';
+    if(!byDomain[d]) byDomain[d] = [];
+    byDomain[d].push(n);
+  });
+  var domains = Object.entries(byDomain)
+    .map(function(e){ return { name: e[0], notes: e[1] }; })
+    .sort(function(a, b){ return b.notes.length - a.notes.length; });
+
+  var N = domains.length;
+  // Fibonacci sphere distribution — perfectly even 3D spread
+  var R = 240;
+  var phi = Math.PI * (3 - Math.sqrt(5));  // golden angle
+  rooms = domains.map(function(d, i){
+    var y = N === 1 ? 0 : 1 - (i / (N - 1)) * 2;     // -1..1
+    var r = Math.sqrt(1 - y*y);
+    var theta = phi * i;
+    var pos = new THREE.Vector3(Math.cos(theta) * r * R, y * R, Math.sin(theta) * r * R);
+    return {
+      id: d.name, label: d.name, count: d.notes.length,
+      hue: hueFor(d.name), notes: d.notes,
+      pos: pos,
+      size: 5 + Math.sqrt(d.notes.length) * 1.6,
+      group: null, beacon: null, floor: null, walls: [],
+      noteObjects: [],
+    };
+  });
+
+  // Place notes in a small spherical cluster around their domain
+  rooms.forEach(function(r){
+    var clusterRadius = 28 + Math.sqrt(r.count) * 4;
+    r.notes.forEach(function(n, ni){
+      // Distribute notes within a sphere around the domain
+      var subPhi = Math.acos(1 - 2 * (ni + 0.5) / Math.max(r.count, 1));
+      var subTheta = phi * ni * 0.7 + ni;
+      var noteR = clusterRadius * (0.4 + Math.random() * 0.6);
+      var noteOffset = new THREE.Vector3(
+        noteR * Math.sin(subPhi) * Math.cos(subTheta),
+        noteR * Math.sin(subPhi) * Math.sin(subTheta),
+        noteR * Math.cos(subPhi)
+      );
+      r.noteObjects.push({ note: n, offset: noteOffset, parent: r });
+    });
+  });
+
+  // Cross-domain shared-tag links (for note-note connections)
+  var tagToNotes = {};
+  notes.forEach(function(n){
+    (n.tags || []).forEach(function(t){
+      if(t.match(/^(type|domain|source|ai|brand)\//)) return;
+      if(!tagToNotes[t]) tagToNotes[t] = [];
+      tagToNotes[t].push(n.id);
+    });
+  });
+  var pairs = {};
+  Object.values(tagToNotes).forEach(function(ids){
+    if(ids.length < 2 || ids.length > 10) return;
+    for(var i = 0; i < ids.length; i++) for(var j = i+1; j < ids.length; j++){
+      var k = [ids[i], ids[j]].sort().join('::');
+      pairs[k] = (pairs[k] || 0) + 1;
+    }
+  });
+  doorways = [];
+  Object.entries(pairs).forEach(function(e){
+    if(e[1] < 2) return;
+    var p = e[0].split('::');
+    doorways.push({ noteA: p[0], noteB: p[1], weight: e[1] });
+  });
+}
+
+/* ─── 3D BUILD ─── */
+function initRenderer(){
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 6000);
+  camera.position.set(0, 200, 540);
+  renderer = new THREE.WebGLRenderer({
+    antialias: true, alpha: true, powerPreference: 'high-performance',
+  });
+  // Cap pixel ratio at 2 — retina+ screens get heavy with 60 glowing meshes + halos
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x03050B, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.3;
+  stage.appendChild(renderer.domElement);
+
+  controls = new window.__OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.10;          // more glide after release
+  controls.rotateSpeed = 0.55;            // gentler rotate
+  controls.zoomSpeed = 1.0;               // responsive zoom
+  controls.panSpeed = 0.7;
+  controls.screenSpacePanning = true;     // pan feels natural with the floor plan
+  controls.minDistance = 80;
+  controls.maxDistance = 1400;
+  controls.target.set(0, 0, 0);  // hub is at origin — radial map is fully 3D, no polar lock
+
+  // Built-in smooth auto-rotate when idle — no conflict with user input
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.35;        // ~6 second full rotation feel
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x223344, 1.2));
+  var keyLight = new THREE.DirectionalLight(0xFFB36A, 0.8);
+  keyLight.position.set(200, 400, 200); scene.add(keyLight);
+  var rimLight = new THREE.PointLight(0x5FC9D8, 1.4, 1000);
+  rimLight.position.set(-200, 200, -200); scene.add(rimLight);
+  var floorLight = new THREE.PointLight(0xA88DF0, 0.5, 600);
+  floorLight.position.set(0, -50, 0); scene.add(floorLight);
+
+  /* ═══════ GALAXY STARFIELD (3 layers — distant pinpricks, mid stars, bright giants) ═══════ */
+  // Layer 1: 8000 distant pinpricks, slight color variety (white/blue/warm) wrapped around the scene
+  (function(){
+    var n = 8000;
+    var pos = new Float32Array(n * 3);
+    var col = new Float32Array(n * 3);
+    for(var i = 0; i < n; i++){
+      // Random points on a large sphere shell so they enclose the camera in 360°
+      var u = Math.random(), v = Math.random();
+      var theta = 2 * Math.PI * u;
+      var phi = Math.acos(2 * v - 1);
+      var r = 2400 + Math.random() * 1800;
+      pos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+      pos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+      pos[i*3+2] = r * Math.cos(phi);
+      var b = 0.5 + Math.random() * 0.5;
+      var tint = Math.random();
+      if(tint < 0.62){ col[i*3]=b; col[i*3+1]=b; col[i*3+2]=b; }
+      else if(tint < 0.82){ col[i*3]=b*0.7; col[i*3+1]=b*0.9; col[i*3+2]=b; }
+      else { col[i*3]=b; col[i*3+1]=b*0.82; col[i*3+2]=b*0.7; }
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+    var pts = new THREE.Points(g, new THREE.PointsMaterial({
+      size: 1.3, vertexColors: true, transparent: true, opacity: 0.7,
+      depthWrite: false, sizeAttenuation: false,
+    }));
+    window._starLayer1 = pts;
+    scene.add(pts);
+  })();
+
+  // Layer 2: 2500 mid-distance brighter stars (with size attenuation so they pop near the camera)
+  (function(){
+    var n = 2500;
+    var pos = new Float32Array(n * 3);
+    var col = new Float32Array(n * 3);
+    for(var i = 0; i < n; i++){
+      pos[i*3]   = (Math.random()-0.5) * 3600;
+      pos[i*3+1] = (Math.random()-0.5) * 3600;
+      pos[i*3+2] = (Math.random()-0.5) * 3600;
+      var b = 0.7 + Math.random() * 0.3;
+      var tint = Math.random();
+      if(tint < 0.3){ col[i*3]=b*0.6; col[i*3+1]=b*0.9; col[i*3+2]=b; }       // blue-white
+      else if(tint < 0.55){ col[i*3]=b; col[i*3+1]=b*0.95; col[i*3+2]=b*0.85; } // white
+      else if(tint < 0.85){ col[i*3]=b; col[i*3+1]=b*0.78; col[i*3+2]=b*0.55; } // warm
+      else { col[i*3]=b; col[i*3+1]=b*0.55; col[i*3+2]=b*0.75; }                // pink
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+    var pts = new THREE.Points(g, new THREE.PointsMaterial({
+      size: 2.6, vertexColors: true, transparent: true, opacity: 0.9,
+      depthWrite: false, sizeAttenuation: true,
+      map: makeStarSpriteTexture(),
+      blending: THREE.AdditiveBlending,
+    }));
+    window._starLayer2 = pts;
+    scene.add(pts);
+  })();
+
+  // Layer 3: ~80 bright "giant" stars with glow halos — scattered prominently
+  (function(){
+    var n = 80;
+    var giantTex = makeStarSpriteTexture();
+    for(var i = 0; i < n; i++){
+      // Place on a torus so they appear at varying depths but visible
+      var r = 600 + Math.random() * 1800;
+      var theta = Math.random() * Math.PI * 2;
+      var phi = Math.acos(2 * Math.random() - 1);
+      var x = r * Math.sin(phi) * Math.cos(theta);
+      var y = r * Math.sin(phi) * Math.sin(theta);
+      var z = r * Math.cos(phi);
+      var hue = new THREE.Color().setHSL(Math.random(), 0.55, 0.7);
+      var giant = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: giantTex, color: hue, transparent: true, opacity: 0.85,
+        blending: THREE.AdditiveBlending, depthWrite: false,
+      }));
+      var s = 18 + Math.random() * 22;
+      giant.scale.set(s, s, 1);
+      giant.position.set(x, y, z);
+      giant._phase = Math.random() * Math.PI * 2;
+      giant._twinkleSpeed = 0.3 + Math.random() * 0.6;
+      giant._baseOpacity = 0.5 + Math.random() * 0.4;
+      scene.add(giant);
+      if(!window._giants) window._giants = [];
+      window._giants.push(giant);
+    }
+  })();
+
+  // Layer 4: Dust nebula clouds — large soft additive sprites with random colored tints
+  (function(){
+    var dustTex = makeNebulaSpriteTexture();
+    var nebulaCount = 22;
+    for(var i = 0; i < nebulaCount; i++){
+      // Tints chosen from a cosmic palette
+      var palette = [
+        [95, 231, 255],  // cyan
+        [255, 179, 106], // warm orange
+        [168, 141, 240], // violet
+        [255, 107, 174], // hot pink
+        [125, 213, 255], // ice
+        [126, 200, 130], // soft green
+      ];
+      var p = palette[Math.floor(Math.random() * palette.length)];
+      var c = new THREE.Color(p[0]/255, p[1]/255, p[2]/255);
+      var nebula = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: dustTex, color: c, transparent: true, opacity: 0.08 + Math.random() * 0.08,
+        blending: THREE.AdditiveBlending, depthWrite: false,
+      }));
+      // Place at varying depths — some near, some far
+      var r = 400 + Math.random() * 2200;
+      var theta = Math.random() * Math.PI * 2;
+      var phi = Math.acos(2 * Math.random() - 1);
+      nebula.position.set(
+        r * Math.sin(phi) * Math.cos(theta),
+        r * Math.sin(phi) * Math.sin(theta),
+        r * Math.cos(phi)
+      );
+      var size = 600 + Math.random() * 1100;
+      nebula.scale.set(size, size, 1);
+      nebula._phase = Math.random() * Math.PI * 2;
+      scene.add(nebula);
+      if(!window._nebulas) window._nebulas = [];
+      window._nebulas.push(nebula);
+    }
+  })();
+
+  /* No ground grid — pure space, no floor */
+
+  window.addEventListener('resize', onResize);
+  renderer.domElement.addEventListener('mousemove', onMouseMove);
+  renderer.domElement.addEventListener('click', onClick);
+  // Pause auto-rotate when user touches anything, resume after idle delay
+  function userActive(){
+    controls.autoRotate = false;
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(function(){ controls.autoRotate = true; }, 6000);
+  }
+  renderer.domElement.addEventListener('pointerdown', userActive);
+  renderer.domElement.addEventListener('wheel', userActive, { passive: true });
+}
+
+function buildScene(){
+  /* Central HUB — "MIND PALACE" glowing core */
+  var hubMat = new THREE.MeshStandardMaterial({
+    color: 0x5FE7FF, emissive: 0x5FE7FF, emissiveIntensity: 1.0,
+    roughness: 0.3, metalness: 0.0, transparent: true, opacity: 0.92,
+  });
+  var hub = new THREE.Mesh(new THREE.SphereGeometry(14, 32, 32), hubMat);
+  scene.add(hub);
+  var halo1 = new THREE.Mesh(new THREE.SphereGeometry(20, 24, 24),
+    new THREE.MeshBasicMaterial({ color: 0x5FE7FF, transparent: true, opacity: 0.22, side: THREE.BackSide, depthWrite: false }));
+  scene.add(halo1);
+  var halo2 = new THREE.Mesh(new THREE.SphereGeometry(32, 20, 20),
+    new THREE.MeshBasicMaterial({ color: 0x5FE7FF, transparent: true, opacity: 0.08, side: THREE.BackSide, depthWrite: false }));
+  scene.add(halo2);
+  var hubLabel = makeLabelSprite('MIND PALACE', '#D9E8F2', '600 36px Orbitron, sans-serif', 1.0);
+  hubLabel.position.set(0, 28, 0);
+  hubLabel.scale.set(60, 11, 1);
+  scene.add(hubLabel);
+
+  // Branches (one per domain)
+  rooms.forEach(buildBranch);
+
+  // Note-note shared-tag connections
+  doorways.forEach(buildSharedLink);
+}
+
+function buildBranch(r){
+  var grp = new THREE.Group();
+  var hue = new THREE.Color(r.hue);
+  var ORIGIN = new THREE.Vector3(0,0,0);
+
+  // Branch line from hub to domain node
+  var branchGeom = new THREE.BufferGeometry().setFromPoints([ORIGIN, r.pos.clone()]);
+  grp.add(new THREE.Line(branchGeom, new THREE.LineBasicMaterial({ color: r.hue, transparent: true, opacity: 0.55 })));
+
+  // Particles travelling hub → domain (3 per branch, evenly phased)
+  for(var pi = 0; pi < 3; pi++){
+    spawnParticle({
+      from: ORIGIN.clone(), to: r.pos.clone(),
+      color: r.hue, size: 4.5, speed: 0.18,
+      phase: pi / 3,
+    });
+  }
+
+  // Domain node — larger glowing sphere
+  var dom = new THREE.Mesh(
+    new THREE.SphereGeometry(r.size, 24, 24),
+    new THREE.MeshStandardMaterial({
+      color: hue, emissive: hue, emissiveIntensity: 0.85,
+      roughness: 0.35, metalness: 0, transparent: true, opacity: 0.94,
+    })
+  );
+  dom.position.copy(r.pos);
+  dom.userData = { room: r, kind: 'room' };
+  grp.add(dom);
+  r.floor = dom;             // reuse field for raycast lookup
+  allRoomMeshes.push(dom);
+
+  // Domain halo (BackSide bloom)
+  var domHalo = new THREE.Mesh(
+    new THREE.SphereGeometry(r.size * 2, 16, 16),
+    new THREE.MeshBasicMaterial({ color: hue, transparent: true, opacity: 0.18, side: THREE.BackSide, depthWrite: false })
+  );
+  domHalo.position.copy(r.pos);
+  grp.add(domHalo);
+  r.beacon = domHalo;        // reuse field for breathing animation
+
+  // Domain label
+  var lbl = makeLabelSprite(r.label.toUpperCase(), '#D9E8F2', '600 30px Orbitron, sans-serif', 1.0);
+  lbl.position.copy(r.pos).add(new THREE.Vector3(0, r.size + 12, 0));
+  lbl.scale.set(50, 9.5, 1);
+  grp.add(lbl);
+  var sub = makeLabelSprite(r.count + ' NOTES', r.hue, '600 18px "JetBrains Mono", monospace', 0.85);
+  sub.position.copy(r.pos).add(new THREE.Vector3(0, r.size + 6, 0));
+  sub.scale.set(36, 6.5, 1);
+  grp.add(sub);
+
+  // Notes — small glowing spheres orbiting the domain
+  r.noteObjects.forEach(function(no){
+    var n = no.note;
+    var q = n.quality_score || 3;
+    var size = 1.4 + q * 0.4;
+    var pos = r.pos.clone().add(no.offset);
+    var noteMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(size, 12, 12),
+      new THREE.MeshStandardMaterial({
+        color: hue, emissive: hue, emissiveIntensity: 0.85,
+        roughness: 0.4, metalness: 0.05, transparent: true, opacity: 0.92,
+      })
+    );
+    noteMesh.position.copy(pos);
+    noteMesh.userData = { note: n, room: r, kind: 'note' };
+    noteMesh._basePos = { x: pos.x, y: pos.y, z: pos.z };
+    noteMesh._phase = Math.random() * Math.PI * 2;
+    grp.add(noteMesh);
+    allObjects.push(noteMesh);
+    // Twig — short line domain→note
+    var twigGeom = new THREE.BufferGeometry().setFromPoints([r.pos, pos]);
+    grp.add(new THREE.Line(twigGeom, new THREE.LineBasicMaterial({ color: r.hue, transparent: true, opacity: 0.18 })));
+    // Subtle particle drifting outward to each note
+    spawnParticle({
+      from: r.pos.clone(), to: pos.clone(),
+      color: r.hue, size: 2.4, speed: 0.22, phase: Math.random(),
+    });
+    // Halo
+    var halo = new THREE.Mesh(
+      new THREE.SphereGeometry(size * 1.7, 10, 10),
+      new THREE.MeshBasicMaterial({ color: hue, transparent: true, opacity: 0.12, depthWrite: false })
+    );
+    halo.position.copy(pos);
+    noteMesh._halo = halo;
+    grp.add(halo);
+  });
+
+  grp.userData = { room: r };
+  r.group = grp;
+  scene.add(grp);
+}
+
+function buildSharedLink(d){
+  /* Warm-orange arc between two notes that share 2+ user tags */
+  var noteA = allObjects.find(function(o){ return o.userData.note.id === d.noteA; });
+  var noteB = allObjects.find(function(o){ return o.userData.note.id === d.noteB; });
+  if(!noteA || !noteB) return;
+  var a = noteA.position.clone(), b = noteB.position.clone();
+  var mid = new THREE.Vector3().addVectors(a, b).multiplyScalar(0.5);
+  mid.add(mid.clone().normalize().multiplyScalar(15));
+  var pts = new THREE.QuadraticBezierCurve3(a, mid, b).getPoints(18);
+  var geom = new THREE.BufferGeometry().setFromPoints(pts);
+  var mat = new THREE.LineBasicMaterial({ color: 0xFFB36A, transparent: true, opacity: Math.min(0.42, 0.16 + d.weight * 0.06) });
+  scene.add(new THREE.Line(geom, mat));
+
+  // Particles flowing both directions along the arc
+  spawnParticle({
+    from: a, to: b, mid: mid.clone(),
+    color: 0xFFB36A, size: 3.2, speed: 0.20, phase: 0,
+  });
+  spawnParticle({
+    from: b, to: a, mid: mid.clone(),
+    color: 0xFFD08A, size: 3.2, speed: 0.20, phase: 0.5,
+  });
+}
+
+/* legacy stub */
+function buildRoom(r){ buildBranch(r); }
+
+/* legacy stub — old buildDoorway no longer called (replaced by buildSharedLink) */
+function buildDoorway(d){}
+
+/* Soft round star sprite — bright center, gentle falloff */
+var _starTexCache = null;
+function makeStarSpriteTexture(){
+  if(_starTexCache) return _starTexCache;
+  var cv = document.createElement('canvas');
+  cv.width = 128; cv.height = 128;
+  var ctx = cv.getContext('2d');
+  var g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0.00, 'rgba(255,255,255,1)');
+  g.addColorStop(0.18, 'rgba(255,255,255,0.85)');
+  g.addColorStop(0.45, 'rgba(255,255,255,0.25)');
+  g.addColorStop(0.80, 'rgba(255,255,255,0.04)');
+  g.addColorStop(1.00, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 128);
+  _starTexCache = new THREE.CanvasTexture(cv);
+  _starTexCache.minFilter = THREE.LinearFilter;
+  return _starTexCache;
+}
+
+/* Larger soft nebula sprite for dust clouds */
+var _nebulaTexCache = null;
+function makeNebulaSpriteTexture(){
+  if(_nebulaTexCache) return _nebulaTexCache;
+  var cv = document.createElement('canvas');
+  cv.width = 256; cv.height = 256;
+  var ctx = cv.getContext('2d');
+  var g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0.00, 'rgba(255,255,255,1)');
+  g.addColorStop(0.20, 'rgba(255,255,255,0.55)');
+  g.addColorStop(0.50, 'rgba(255,255,255,0.18)');
+  g.addColorStop(0.80, 'rgba(255,255,255,0.04)');
+  g.addColorStop(1.00, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 256, 256);
+  _nebulaTexCache = new THREE.CanvasTexture(cv);
+  _nebulaTexCache.minFilter = THREE.LinearFilter;
+  return _nebulaTexCache;
+}
+
+/* Spawn an animated traveller particle that loops along a line (straight or bezier).
+   opts: { from: V3, to: V3, mid?: V3, color: hex|num, size?: number, speed?: number, phase?: number }
+*/
+function spawnParticle(opts){
+  var sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: makeStarSpriteTexture(),
+    color: opts.color, transparent: true, opacity: 0.95,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }));
+  var sz = opts.size || 3;
+  sprite.scale.set(sz, sz, 1);
+  scene.add(sprite);
+  particles.push({
+    from: opts.from, to: opts.to, mid: opts.mid || null,
+    sprite: sprite, speed: opts.speed || 0.2,
+    progress: opts.phase != null ? opts.phase : Math.random(),
+  });
+}
+
+function makeLabelSprite(text, color, font, opacity){
+  var cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 96;
+  var ctx = cv.getContext('2d');
+  ctx.font = font;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = color;
+  ctx.shadowColor = 'rgba(0,0,0,0.9)';
+  ctx.shadowBlur = 10;
+  ctx.fillText(text, 256, 48);
+  var tex = new THREE.CanvasTexture(cv);
+  tex.minFilter = THREE.LinearFilter;
+  return new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: opacity, depthWrite: false }));
+}
+
+/* ─── INTERACTIONS ─── */
+function onResize(){
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function onMouseMove(e){
+  mouse.x =  (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  // Test notes first (smaller, more specific)
+  var hits = raycaster.intersectObjects(allObjects, false);
+  if(hits.length){
+    var obj = hits[0].object;
+    if(obj !== hoverItem){ hoverItem = obj; showHoverNote(obj.userData.note, obj.userData.room); titleOverlay.classList.add('faded'); }
+    positionReticle(e.clientX, e.clientY);
+    positionHoverCard(e.clientX, e.clientY);
+    stage.style.cursor = 'pointer';
+    return;
+  }
+  // Else test room floors
+  var roomHits = raycaster.intersectObjects(allRoomMeshes, false);
+  if(roomHits.length){
+    var f = roomHits[0].object;
+    if(f !== hoverItem){ hoverItem = f; showHoverRoom(f.userData.room); titleOverlay.classList.add('faded'); }
+    positionReticle(e.clientX, e.clientY);
+    positionHoverCard(e.clientX, e.clientY);
+    stage.style.cursor = 'pointer';
+    return;
+  }
+  // No hit
+  if(hoverItem){
+    hoverItem = null;
+    hoverCard.classList.remove('show');
+    reticle.classList.remove('show');
+    titleOverlay.classList.remove('faded');
+    stage.style.cursor = 'grab';
+  }
+}
+
+function positionReticle(x, y){
+  reticle.style.left = x + 'px';
+  reticle.style.top = y + 'px';
+  reticle.classList.add('show');
+}
+function positionHoverCard(x, y){
+  var rx = x + 24, ry = y + 24;
+  var w = hoverCard.offsetWidth, h = hoverCard.offsetHeight;
+  if(rx + w + 16 > window.innerWidth) rx = x - w - 24;
+  if(ry + h + 16 > window.innerHeight) ry = y - h - 24;
+  hoverCard.style.left = rx + 'px';
+  hoverCard.style.top = ry + 'px';
+}
+
+function showHoverRoom(r){
+  hoverCard.innerHTML =
+    '<div class="hc-eyebrow"><span class="hc-dot" style="background:'+r.hue+';color:'+r.hue+'"></span> ROOM</div>' +
+    '<div class="hc-title">' + esc(r.label) + '</div>' +
+    '<div class="hc-meta">' + r.count + ' OBJECTS · CLICK TO ENTER</div>';
+  hoverCard.classList.add('show');
+}
+function showHoverNote(n, r){
+  hoverCard.innerHTML =
+    '<div class="hc-eyebrow"><span class="hc-dot" style="background:'+r.hue+';color:'+r.hue+'"></span> ' + esc(r.label) + '</div>' +
+    '<div class="hc-title">' + esc(n.title || 'Untitled') + '</div>' +
+    (n.summary ? '<div class="hc-summary">' + esc(n.summary) + '</div>' : '') +
+    '<div class="hc-meta">' + (n.note_type || 'note').toUpperCase() + (n.created_at ? ' · ' + relTime(n.created_at).toUpperCase() : '') + '</div>';
+  hoverCard.classList.add('show');
+}
+
+function onClick(){
+  if(!hoverItem) return;
+  var ud = hoverItem.userData;
+  if(ud.kind === 'note'){
+    openNoteDrawer(ud.note, ud.room);
+    flyToObject(hoverItem);
+  } else if(ud.kind === 'room'){
+    openRoomDrawer(ud.room);
+    flyToRoom(ud.room);
+  }
+}
+
+function flyToRoom(r){
+  // r.pos is the domain node position (Vector3)
+  var dist = r.size * 6;
+  // Approach from outside (away from origin)
+  var dir = r.pos.clone().normalize().multiplyScalar(dist);
+  var camPos = r.pos.clone().add(dir).add(new THREE.Vector3(0, dist * 0.3, 0));
+  animateCamera(camPos, r.pos.clone(), 900);
+}
+function flyToObject(obj){
+  var p = obj.position;
+  animateCamera(
+    new THREE.Vector3(p.x + 30, p.y + 60, p.z + 50),
+    new THREE.Vector3(p.x, p.y, p.z),
+    700
+  );
+}
+function animateCamera(pos, look, duration){
+  // Pause auto-rotate while we're moving; resume after a delay
+  controls.autoRotate = false;
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(function(){ controls.autoRotate = true; }, 6000);
+
+  var sp = camera.position.clone();
+  var sl = controls.target.clone();
+  var t0 = performance.now();
+  (function tick(now){
+    var t = Math.min(1, (now - t0) / duration);
+    // easeOutCubic — fast start, gentle landing — feels much smoother than easeInOutQuad
+    var e = 1 - Math.pow(1 - t, 3);
+    camera.position.lerpVectors(sp, pos, e);
+    controls.target.lerpVectors(sl, look, e);
+    if(t < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+/* ─── DRAWER ─── */
+function openRoomDrawer(r){
+  var html = '<div class="drawer-eyebrow"><span class="dot" style="background:'+r.hue+';color:'+r.hue+'"></span> ROOM · ' + esc(r.label.toUpperCase()) + '</div>';
+  html += '<h2 class="drawer-title">' + esc(r.label) + '</h2>';
+  html += '<div class="drawer-summary">A room containing <strong>'+r.count+'</strong> objects. Click any to inspect.</div>';
+  html += '<div class="drawer-section-label">Objects in this room</div>';
+  html += '<ul class="drawer-list">';
+  r.notes.forEach(function(n){ html += '<li data-jump-note="'+esc(n.id)+'">'+esc(n.title || 'Untitled')+'</li>'; });
+  html += '</ul>';
+  drawerContent.innerHTML = html;
+  drawer.classList.add('open');
+}
+function openNoteDrawer(n, r){
+  var html = '<div class="drawer-eyebrow"><span class="dot" style="background:'+r.hue+';color:'+r.hue+'"></span> ' + esc(r.label.toUpperCase()) + '</div>';
+  html += '<h2 class="drawer-title">' + esc(n.title || 'Untitled') + '</h2>';
+  if(n.summary) html += '<div class="drawer-summary">' + esc(n.summary) + '</div>';
+  if(n.key_takeaways && n.key_takeaways.length){
+    html += '<div class="drawer-section-label">Notes & takeaways</div>';
+    html += '<ul class="drawer-list">';
+    n.key_takeaways.forEach(function(t){ html += '<li>'+esc(t)+'</li>'; });
+    html += '</ul>';
+  }
+  html += '<div class="drawer-actions">';
+  if(n.notion_page_id) html += '<a class="drawer-action" href="'+esc(notionUrl(n.notion_page_id))+'" target="_blank">OPEN IN NOTION</a>';
+  if(n.source_url)     html += '<a class="drawer-action" href="'+esc(n.source_url)+'" target="_blank">OPEN SOURCE</a>';
+  html += '</div>';
+  drawerContent.innerHTML = html;
+  drawer.classList.add('open');
+}
+document.getElementById('drawerClose').addEventListener('click', function(){ drawer.classList.remove('open'); });
+drawerContent.addEventListener('click', function(e){
+  var li = e.target.closest('[data-jump-note]');
+  if(!li) return;
+  var id = li.getAttribute('data-jump-note');
+  var obj = allObjects.find(function(o){ return o.userData.note && o.userData.note.id === id; });
+  if(obj){ openNoteDrawer(obj.userData.note, obj.userData.room); flyToObject(obj); }
+});
+
+/* ─── SEARCH ─── */
+searchEl.addEventListener('input', function(e){
+  var q = e.target.value.trim().toLowerCase();
+  if(!q) return;
+  var room = rooms.find(function(r){ return r.label.toLowerCase().indexOf(q) >= 0; });
+  if(room){ flyToRoom(room); return; }
+  var obj = allObjects.find(function(o){ return (o.userData.note.title || '').toLowerCase().indexOf(q) >= 0; });
+  if(obj){ flyToObject(obj); }
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){ drawer.classList.remove('open'); animateCamera(new THREE.Vector3(0,200,540), new THREE.Vector3(0,0,0), 900); searchEl.blur(); }
+  if(e.key === '/' && document.activeElement !== searchEl){ e.preventDefault(); searchEl.focus(); }
+});
+
+/* ─── ANIMATION LOOP ─── */
+// Throttle expensive DOM writes (HUD altitude / compass) to ~12fps — the smooth
+// camera + object animations stay at full 60fps, but we don't hammer the DOM.
+var _lastHudUpdate = 0;
+function loop(){
+  requestAnimationFrame(loop);
+  var t = performance.now() / 1000;
+  var now = performance.now();
+  controls.update();   // handles damping + autoRotate smoothly
+
+  /* Animated particles travelling along edges */
+  var dt = 1/60;   // assume ~60fps; safe upper bound for speed factor
+  for(var pi = 0; pi < particles.length; pi++){
+    var p = particles[pi];
+    p.progress += p.speed * dt;
+    if(p.progress > 1) p.progress -= 1;
+    if(p.mid){
+      // Quadratic bezier
+      var u = 1 - p.progress;
+      var tt = p.progress;
+      p.sprite.position.x = u*u*p.from.x + 2*u*tt*p.mid.x + tt*tt*p.to.x;
+      p.sprite.position.y = u*u*p.from.y + 2*u*tt*p.mid.y + tt*tt*p.to.y;
+      p.sprite.position.z = u*u*p.from.z + 2*u*tt*p.mid.z + tt*tt*p.to.z;
+    } else {
+      p.sprite.position.x = p.from.x + (p.to.x - p.from.x) * p.progress;
+      p.sprite.position.y = p.from.y + (p.to.y - p.from.y) * p.progress;
+      p.sprite.position.z = p.from.z + (p.to.z - p.from.z) * p.progress;
+    }
+    // Fade in at start, full bright middle, fade out near end (smoother)
+    var fade = Math.sin(p.progress * Math.PI);
+    p.sprite.material.opacity = 0.30 + fade * 0.65;
+  }
+
+  /* Slow background star parallax — distant layer rotates almost imperceptibly */
+  if(window._starLayer1) window._starLayer1.rotation.y = t * 0.005;
+  if(window._starLayer2) window._starLayer2.rotation.y = -t * 0.008;
+
+  /* Twinkle the giant stars */
+  if(window._giants){
+    for(var gi = 0; gi < window._giants.length; gi++){
+      var g = window._giants[gi];
+      var tw = (Math.sin(t * g._twinkleSpeed + g._phase) + 1) * 0.5;
+      g.material.opacity = g._baseOpacity * (0.55 + tw * 0.45);
+    }
+  }
+
+  /* Gentle nebula drift — slow opacity throb */
+  if(window._nebulas){
+    for(var ni = 0; ni < window._nebulas.length; ni++){
+      var nb = window._nebulas[ni];
+      var n2 = (Math.sin(t * 0.3 + nb._phase) + 1) * 0.5;
+      nb.material.opacity = 0.06 + n2 * 0.06;
+    }
+  }
+
+  // Object bob + halo throb (lightweight per-frame)
+  for(var i = 0; i < allObjects.length; i++){
+    var o = allObjects[i];
+    var sin = Math.sin(t * 0.9 + o._phase);
+    o.position.y = o._basePos.y + sin * 0.4;
+    o.rotation.y = t * 0.3 + o._phase;
+    if(o._halo){
+      o._halo.position.copy(o.position);
+      o._halo.material.opacity = 0.12 + (sin + 1) * 0.07;
+      var s = 1 + sin * 0.08;
+      o._halo.scale.set(s, s, s);
+    }
+  }
+
+  // Room beacon + floor pulse (lightweight)
+  for(var j = 0; j < rooms.length; j++){
+    var r = rooms[j];
+    if(r.beacon) r.beacon.material.opacity = 0.18 + (Math.sin(t * 0.6 + j) + 1) * 0.06;
+    if(r.floor)  r.floor.material.emissiveIntensity = 0.10 + (Math.sin(t * 0.7 + j) + 1) * 0.04;
+  }
+
+  // HUD + compass — only every ~80ms, not every frame
+  if(now - _lastHudUpdate > 80){
+    _lastHudUpdate = now;
+    var camAngle = Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z);
+    compassSvg.style.transform = 'rotate(' + (-camAngle) + 'rad)';
+    document.getElementById('hudAlt').textContent = Math.round(camera.position.y) + ' u';
+  }
+
+  renderer.render(scene, camera);
+}
+
+/* ─── BOOTSTRAP ─── */
+fetch('/api/notes')
+  .then(function(r){ if(!r.ok) throw new Error('api'); return r.json(); })
+  .then(function(data){ if(Array.isArray(data)) allNotes = data; })
+  .catch(function(){
+    return fetch('notes.json').then(function(r){ return r.ok ? r.json() : []; }).then(function(d){ if(Array.isArray(d)) allNotes = d; }).catch(function(){});
+  })
+  .finally(function(){
+    if(!allNotes.length){
+      document.getElementById('emptyState').style.display = 'flex';
+      ['hudRooms','hudObjects','hudDoors'].forEach(function(id){ document.getElementById(id).textContent = '0'; });
+      return;
+    }
+    buildPalaceLayout(allNotes);
+    initRenderer();
+    buildScene();
+    document.getElementById('hudRooms').textContent = rooms.length;
+    document.getElementById('hudObjects').textContent = allObjects.length;
+    document.getElementById('hudDoors').textContent = doorways.length;
+    loop();
+  });
+
+})();
+}
+
+if(window.THREE && window.__OrbitControls){ __startApp(); }
+else {
+  window.addEventListener('three-ready', __startApp);
+  setTimeout(function(){
+    if(!window.THREE){
+      var s = document.getElementById('stage');
+      if(s) s.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#8FA8BB;font-family:Orbitron;font-size:13px;letter-spacing:0.2em;text-transform:uppercase">▣ Three.js failed to load — refresh</div>';
+    }
+  }, 10000);
+}
+</script>
+<script>
+/* Smooth nav: fade body out before navigating to internal pages.
+   Skip clicks inside the 3D canvas — they're caught by Three.js. */
+document.addEventListener('click', function(e){
+  var a = e.target.closest('a[href]');
+  if(!a) return;
+  var href = a.getAttribute('href');
+  if(!href || href.startsWith('#') || href.startsWith('http') || a.target === '_blank') return;
+  e.preventDefault();
+  document.body.classList.add('leaving');
+  setTimeout(function(){ window.location.href = href; }, 240);
+});
+</script>
+<script src="credits.js"></script>
+</body>
+</html>

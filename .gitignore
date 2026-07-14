@@ -1,0 +1,36 @@
+﻿# secrets
+.env
+.env.*
+!.env.example
+notes.txt
+
+# local databases / agent artifacts
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+.swarm/
+.claude-flow/
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+Thumbs.db
+.DS_Store
+
+# data (chosen during setup)

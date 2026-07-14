@@ -1,0 +1,51 @@
+name: Update Mind Map
+
+on:
+  # Run daily at midnight UTC
+  schedule:
+    - cron: '0 0 * * *'
+  # Also run on push to main (when domains.py changes)
+  push:
+    branches: [main]
+    paths:
+      - 'src/config/domains.py'
+      - 'data/discovered_domains.json'
+      - 'scripts/generate_mindmap.py'
+  # Manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  update-mindmap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pydantic pydantic-settings python-dotenv
+
+      - name: Generate mind map
+        run: python scripts/generate_mindmap.py
+        env:
+          # Dummy values so settings.py doesn't crash (only domains.py is needed)
+          TELEGRAM_BOT_TOKEN: dummy
+
+      - name: Create GitHub Pages files
+        run: |
+          touch docs/.nojekyll
+          echo '<meta http-equiv="refresh" content="0;url=mindmap.html">' > docs/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          force_orphan: true

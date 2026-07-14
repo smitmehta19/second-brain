@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mind Palace — Atlas</title>
+
+<link rel="stylesheet" href="theme.css">
+
+<style>
+/* ─── MAIN GRID ─── */
+.atlas {
+  max-width: 1400px; margin: 0 auto; padding: 56px 48px 80px;
+  position: relative; z-index: 2;
+}
+
+/* ─── BRIEFING HEADER ─── */
+.briefing {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  padding-bottom: 40px; border-bottom: 1px solid var(--rule-2);
+  margin-bottom: 48px;
+}
+.briefing-eyebrow {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px;
+}
+.briefing-eyebrow::before {
+  content: '§'; color: var(--accent); margin-right: 10px;
+  font-family: var(--font-display); font-style: italic;
+}
+.briefing-headline {
+  font-family: var(--font-display); font-variation-settings: 'opsz' 144, 'wght' 350, 'SOFT' 50;
+  font-size: clamp(38px, 5.5vw, 72px); line-height: 0.96; letter-spacing: -0.035em;
+  color: var(--text-primary);
+}
+.briefing-headline em {
+  font-style: italic; color: var(--accent-2);
+  font-variation-settings: 'opsz' 144, 'wght' 350, 'SOFT' 100, 'WONK' 1;
+}
+.briefing-sub {
+  margin-top: 14px;
+  font-family: var(--font-display); font-style: italic; font-size: 17px; color: var(--text-secondary);
+  font-variation-settings: 'opsz' 14, 'wght' 350; letter-spacing: 0.005em;
+  max-width: 48ch;
+}
+.briefing-stats {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px;
+  align-self: end;
+}
+.briefing-stat { border-top: 1px solid var(--rule-2); padding-top: 16px; }
+.briefing-stat .n {
+  font-family: var(--font-display); font-variation-settings: 'opsz' 144, 'wght' 400;
+  font-size: 48px; line-height: 1; letter-spacing: -0.025em; color: var(--text-primary);
+}
+.briefing-stat .n em { color: var(--accent-2); font-style: italic; }
+.briefing-stat .l {
+  margin-top: 8px;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+
+/* ─── PANEL FRAME ─── */
+.panel-head {
+  display: flex; align-items: baseline; gap: 16px; margin-bottom: 22px;
+  padding-bottom: 14px; border-bottom: 1px dashed var(--rule-2);
+}
+.panel-num {
+  font-family: var(--font-display); font-variation-settings: 'opsz' 144, 'wght' 350;
+  font-size: 28px; line-height: 1; color: var(--text-disabled);
+  font-style: italic; letter-spacing: -0.02em; flex-shrink: 0;
+}
+.panel-title {
+  font-family: var(--font-display); font-variation-settings: 'opsz' 36, 'wght' 400, 'SOFT' 30;
+  font-size: 26px; line-height: 1.1; letter-spacing: -0.02em; color: var(--text-primary);
+}
+.panel-title em {
+  font-style: italic; color: var(--accent-2);
+  font-variation-settings: 'opsz' 36, 'wght' 400, 'SOFT' 100, 'WONK' 1;
+}
+.panel-meta {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-left: auto; align-self: center; flex-shrink: 0;
+}
+
+/* ─── ROW LAYOUTS ─── */
+.row { display: grid; gap: 48px; margin-bottom: 64px; }
+.row-full { grid-template-columns: 1fr; }
+
+/* ─── GEM CARDS ─── */
+.gem-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.gem-card {
+  position: relative; padding: 24px; cursor: pointer;
+  border: 1px solid var(--rule-2);
+  background: rgba(31,27,21,0.4);
+  transition: all 0.2s ease;
+  min-height: 200px; display: flex; flex-direction: column;
+}
+.gem-card:hover { border-color: var(--accent); background: rgba(31,27,21,0.7); transform: translateY(-2px); }
+.gem-card-num {
+  position: absolute; top: 14px; right: 16px;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em;
+  color: var(--text-disabled); text-transform: uppercase;
+}
+.gem-card-num .h { color: var(--accent); font-family: var(--font-display); font-style: italic; font-size: 13px; }
+.gem-eyebrow {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.gem-eyebrow .age { color: var(--accent-2); font-family: var(--font-display); font-style: italic; font-size: 13px; text-transform: none; letter-spacing: 0; }
+.gem-title {
+  font-family: var(--font-display); font-variation-settings: 'opsz' 24, 'wght' 400, 'SOFT' 30;
+  font-size: 18px; line-height: 1.25; letter-spacing: -0.012em; color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.gem-summary {
+  font-size: 13px; line-height: 1.55; color: var(--text-secondary);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+  margin-bottom: 14px;
+}
+.gem-foot {
+  margin-top: auto; display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.gem-quality { display: inline-flex; gap: 2px; }
+.gem-quality .qd { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--text-disabled); }
+.gem-quality .qd.on { background: var(--accent); }
+
+/* ─── BRIDGE CARDS ─── */
+.bridge-list { display: flex; flex-direction: column; gap: 14px; }
+.bridge-card {
+  padding: 18px 22px; border: 1px solid var(--rule-2);
+  display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center;
+  cursor: pointer; transition: all 0.2s;
+}
+.bridge-card:hover { border-color: var(--accent); background: rgba(95,231,255,0.04); }
+.bridge-title {
+  font-family: var(--font-display); font-variation-settings: 'opsz' 18, 'wght' 400;
+  font-size: 15px; color: var(--text-primary); line-height: 1.3;
+}
+.bridge-domains {
+  display: flex; gap: 6px; align-items: center;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+  text-transform: lowercase; color: var(--text-muted);
+}
+.bridge-domains .arrow { color: var(--accent); font-family: var(--font-display); font-style: italic; }
+.bridge-domains .chip {
+  display: inline-block; padding: 2px 9px; border: 1px solid var(--rule-2);
+  color: var(--text-secondary);
+}
+
+/* ─── EMPTY STATE ─── */
+.empty {
+  padding: 22px 24px; border: 1px dashed var(--rule-2);
+  display: flex; align-items: center; gap: 18px;
+}
+.empty .g {
+  font-family: var(--font-display); font-style: italic; font-size: 30px;
+  color: var(--text-disabled); flex-shrink: 0;
+  font-variation-settings: 'opsz' 144, 'wght' 300;
+}
+.empty .m {
+  font-family: var(--font-display); font-style: italic; font-size: 14px; color: var(--text-muted);
+  font-variation-settings: 'opsz' 14, 'wght' 350; line-height: 1.5;
+}
+
+/* ─── COLOPHON ─── */
+.colophon {
+  max-width: 1400px; margin: 0 auto; padding: 32px 48px 24px;
+  position: relative; z-index: 2; border-top: 1px solid var(--rule);
+  font-family: var(--font-hud); font-weight: 500;
+  font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--text-disabled); text-align: center;
+}
+.colophon .accent { color: var(--accent); margin: 0 10px; }
+
+/* ─── CREDITS STATUS PILL ─── */
+.credits-wrap { position: relative; }
+
+/* ─── ENTRY ANIMATIONS ─── */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.briefing, .row, .colophon { animation: rise 0.6s ease both; }
+.row:nth-of-type(1) { animation-delay: 0.10s; }
+.row:nth-of-type(2) { animation-delay: 0.18s; }
+.colophon { animation-delay: 0.26s; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1100px) {
+  .gem-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .atlas { padding: 32px 20px 56px; }
+  .briefing { grid-template-columns: 1fr; gap: 32px; }
+  .briefing-headline { font-size: 36px; }
+  .gem-row { grid-template-columns: 1fr; }
+  .colophon { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── MASTHEAD ─── -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="masthead-brand" href="index.html" title="Home">
+      <span class="brand-mark">▣</span>
+      <span class="brand-name">THE MIND <em>PALACE</em></span>
+    </a>
+    <nav class="masthead-nav">
+      <a class="mast-link" href="review.html">Review</a>
+      <a class="mast-link" href="bucket.html">Buckets</a>
+      <a class="mast-link active" href="atlas.html">Atlas</a>
+      <a class="mast-link" href="mindmap.html">Mindmap</a>
+    </nav>
+    <div class="credits-wrap">
+      <button class="status-pill" id="creditsBtn" title="AI credits status">
+        <span class="status-dot" id="creditsDot"></span>
+        <span class="status-label">AI</span>
+      </button>
+      <div class="credits-drop bracketed" id="creditsDrop">
+        <span class="br-tr"></span><span class="br-bl"></span>
+        <div class="credits-label">&#9671; AI CREDITS · TODAY</div>
+        <div id="creditsContent"><div style="color:var(--text-disabled);font-size:12px;letter-spacing:0.1em">Loading...</div></div>
+        <div class="credits-footer">
+          <span>Resets midnight UTC</span>
+          <button onclick="fetchCredits()">Refresh</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="atlas">
+
+  <!-- ─── BRIEFING HEADER ─── -->
+  <section class="briefing">
+    <div>
+      <div class="briefing-eyebrow">&#8470;00 · Daily briefing · <span id="briefDate">—</span></div>
+      <h2 class="briefing-headline" id="briefGreeting">Where your <em>mind has been.</em></h2>
+      <p class="briefing-sub" id="briefSub">A quiet review of what you've saved, what's worth revisiting, and where your thinking has wandered.</p>
+    </div>
+    <div class="briefing-stats">
+      <div class="briefing-stat"><div class="n" id="bsTotal">—</div><div class="l">items archived</div></div>
+      <div class="briefing-stat"><div class="n" id="bsWeek">—</div><div class="l">added this week</div></div>
+      <div class="briefing-stat"><div class="n" id="bsDomains">—</div><div class="l">domains active</div></div>
+      <div class="briefing-stat"><div class="n" id="bsAvg">—</div><div class="l">avg quality</div></div>
+    </div>
+  </section>
+
+  <!-- ─── №01 · FORGOTTEN GEMS ─── -->
+  <section class="row row-full">
+    <div>
+      <div class="panel-head">
+        <span class="panel-num">&#8470;01</span>
+        <h3 class="panel-title">Forgotten <em>gems</em></h3>
+        <span class="panel-meta">high quality · &gt;30 days old</span>
+      </div>
+      <div class="gem-row" id="gemRow"></div>
+    </div>
+  </section>
+
+  <!-- ─── №02 · BRIDGES ─── -->
+  <section class="row row-full">
+    <div>
+      <div class="panel-head">
+        <span class="panel-num">&#8470;02</span>
+        <h3 class="panel-title"><em>Bridges</em></h3>
+        <span class="panel-meta">notes that cross 2+ domains</span>
+      </div>
+      <div class="bridge-list" id="bridgeList"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="colophon">
+  <span class="accent">·</span>
+</footer>
+
+<script>
+(function(){
+
+var DOMAIN_HUES = {
+  'gen-ai':              '#FF5EA8', 'data-engineering':    '#4FA8E0',
+  'data-science':        '#7CD66A', 'computer-science':    '#A88DF0',
+  'job-search':          '#FFC857', 'fitness':             '#FF7847',
+  'cooking':             '#E0CB52', 'fashion':             '#FF89C9',
+  'personal-finance':    '#5BD9A8', 'wedding':             '#FFB0B5',
+  'politics':            '#9C8BB0', 'ireland':             '#6ACC8C',
+  'india':               '#FFA04A', 'anime':               '#C66BE0',
+  'market-intelligence': '#5FE7FF', 'applied-ai':          '#D880E0',
+  'quantum-computing':   '#7DD5FF', 'evergreen':           '#66E0CB',
+  'recipe-veg':          '#B5C740', 'fashion-tech':        '#FF6B6B',
+  'shopping':            '#FFD93D', 'health':              '#5FE0B4',
+  'career':              '#FFA66B', 'travel':              '#7AC9FF',
+  'productivity':        '#C9E07B',
+};
+function hslToHex(h, s, l){
+  l /= 100;
+  var a = s * Math.min(l, 1 - l) / 100;
+  function f(n){
+    var k = (n + h/30) % 12;
+    var col = l - a * Math.max(Math.min(k-3, 9-k, 1), -1);
+    return Math.round(255 * col).toString(16).padStart(2, '0');
+  }
+  return '#' + f(0) + f(8) + f(4);
+}
+function hueFor(d){
+  if(!d) return '#5FE7FF';
+  if(DOMAIN_HUES[d]) return DOMAIN_HUES[d];
+  var h = 0;
+  for(var i = 0; i < d.length; i++) h = ((h << 5) - h + d.charCodeAt(i)) | 0;
+  var hue = Math.abs(h) % 360;
+  return hslToHex(hue, 62 + (Math.abs(h >> 8) % 22), 62 + (Math.abs(h >> 16) % 12));
+}
+
+function esc(s){ if(s == null) return ''; var d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
+function notionUrl(id){ if(!id) return ''; return 'https://www.notion.so/' + id.replace(/-/g,''); }
+function parseDate(s){ if(!s) return null; var d = new Date(s); return isNaN(d.getTime()) ? null : d; }
+function daysAgo(d){ if(!d) return Infinity; return Math.floor((Date.now() - d.getTime()) / 86400000); }
+function relTime(d){
+  if(!d) return '';
+  var days = daysAgo(d);
+  if(days <= 0) return 'today';
+  if(days === 1) return 'yesterday';
+  if(days < 7) return days + 'd ago';
+  if(days < 30) return Math.floor(days / 7) + 'w ago';
+  if(days < 365) return Math.floor(days / 30) + 'mo ago';
+  return Math.floor(days / 365) + 'y ago';
+}
+function primaryDomain(n){ return (n.domains || [])[0] || 'general'; }
+function greetingFor(now){
+  var h = now.getHours();
+  if(h < 5)  return 'Late <em>night</em> review.';
+  if(h < 12) return 'Good <em>morning.</em>';
+  if(h < 17) return 'Good <em>afternoon.</em>';
+  if(h < 21) return 'Good <em>evening.</em>';
+  return 'A <em>quiet</em> evening.';
+}
+
+var allNotes = [];
+
+function $set(id, val, prop){
+  var el = document.getElementById(id);
+  if(el) el[prop || 'textContent'] = val;
+}
+function renderBriefing(){
+  var now = new Date();
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var dateStr = days[now.getDay()] + ' · ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+  $set('briefDate', dateStr);
+  $set('briefGreeting', greetingFor(now), 'innerHTML');
+
+  var weekAgo = Date.now() - 7 * 86400000;
+  var thisWeek = allNotes.filter(function(n){ var d = parseDate(n.created_at); return d && d.getTime() >= weekAgo; }).length;
+  var activeDomains = new Set();
+  var fortnightAgo = Date.now() - 14 * 86400000;
+  allNotes.forEach(function(n){
+    var d = parseDate(n.created_at);
+    if(d && d.getTime() >= fortnightAgo){
+      (n.domains || []).forEach(function(x){ activeDomains.add(x); });
+    }
+  });
+  var avgQuality = allNotes.length
+    ? (allNotes.reduce(function(s, n){ return s + (n.quality_score || 0); }, 0) / allNotes.length).toFixed(1)
+    : '—';
+  $set('bsTotal',   allNotes.length, 'innerHTML');
+  $set('bsWeek',    thisWeek,        'innerHTML');
+  $set('bsDomains', activeDomains.size, 'innerHTML');
+  $set('bsAvg', avgQuality, 'innerHTML');
+}
+
+function renderGems(){
+  var gems = allNotes
+    .filter(function(n){
+      var d = parseDate(n.created_at);
+      return d && (n.quality_score || 0) >= 4 && daysAgo(d) >= 30;
+    })
+    .sort(function(a, b){
+      var as = (a.quality_score || 0) * 0.6 - daysAgo(parseDate(a.created_at)) * -0.01;
+      var bs = (b.quality_score || 0) * 0.6 - daysAgo(parseDate(b.created_at)) * -0.01;
+      return bs - as;
+    })
+    .slice(0, 6);
+
+  if(gems.length < 3){
+    var extras = allNotes
+      .filter(function(n){ return (n.quality_score || 0) >= 3 && daysAgo(parseDate(n.created_at)) >= 14 && gems.indexOf(n) === -1; })
+      .sort(function(a, b){ return (b.quality_score || 0) - (a.quality_score || 0); })
+      .slice(0, 6 - gems.length);
+    gems = gems.concat(extras);
+  }
+  if(gems.length < 3){
+    var fresh = allNotes
+      .filter(function(n){ return (n.quality_score || 0) >= 4 && gems.indexOf(n) === -1; })
+      .sort(function(a, b){ return (b.quality_score || 0) - (a.quality_score || 0) || (parseDate(b.created_at) || 0) - (parseDate(a.created_at) || 0); })
+      .slice(0, 6 - gems.length);
+    gems = gems.concat(fresh);
+  }
+
+  var $row = document.getElementById('gemRow');
+  if(!gems.length){
+    $row.innerHTML = '<div class="empty"><div class="g">&#10022;</div><div class="m">No forgotten gems yet. Your archive is still young.</div></div>';
+    return;
+  }
+  var html = '';
+  gems.forEach(function(n, i){
+    var dom = primaryDomain(n);
+    var hue = hueFor(dom);
+    var q = n.quality_score || 0;
+    var num = String(i + 1).padStart(2, '0');
+    html += '<a class="gem-card" href="' + (n.notion_page_id ? esc(notionUrl(n.notion_page_id)) : esc(n.source_url || '#')) + '" target="_blank" rel="noopener">';
+    html += '<div class="gem-card-num"><span class="h">&#8470;</span>' + num + '</div>';
+    html += '<div class="gem-eyebrow"><span style="width:6px;height:6px;border-radius:50%;background:' + hue + ';display:inline-block"></span> ' + esc(dom) + ' <span class="age">· ' + relTime(parseDate(n.created_at)) + '</span></div>';
+    html += '<div class="gem-title">' + esc(n.title || 'Untitled') + '</div>';
+    if(n.summary) html += '<div class="gem-summary">' + esc(n.summary) + '</div>';
+    html += '<div class="gem-foot"><span class="gem-quality">';
+    for(var k = 0; k < 5; k++) html += '<span class="qd' + (k < q ? ' on' : '') + '"></span>';
+    html += '</span> · quality ' + q + '/5</div>';
+    html += '</a>';
+  });
+  $row.innerHTML = html;
+}
+
+function renderBridges(){
+  var bridges = allNotes
+    .filter(function(n){ return (n.domains || []).length >= 2; })
+    .sort(function(a, b){ return (b.domains.length - a.domains.length) || ((parseDate(b.created_at) || 0) - (parseDate(a.created_at) || 0)); })
+    .slice(0, 7);
+
+  var $l = document.getElementById('bridgeList');
+  if(!bridges.length){
+    $l.innerHTML = '<div class="empty"><div class="g">&#8644;</div><div class="m">No cross-domain notes yet. As your archive grows, surprising connections will surface here.</div></div>';
+    return;
+  }
+  var html = '';
+  bridges.forEach(function(n){
+    var href = n.notion_page_id ? notionUrl(n.notion_page_id) : (n.source_url || '#');
+    html += '<a class="bridge-card" href="' + esc(href) + '" target="_blank" rel="noopener">';
+    html += '<div class="bridge-title">' + esc(n.title || 'Untitled') + '</div>';
+    html += '<div class="bridge-domains">';
+    n.domains.slice(0, 3).forEach(function(d, i){
+      if(i > 0) html += '<span class="arrow">&#8596;</span>';
+      html += '<span class="chip" style="border-color:' + hueFor(d) + '40">' + esc(d) + '</span>';
+    });
+    html += '</div></a>';
+  });
+  $l.innerHTML = html;
+}
+
+fetch('/api/notes')
+  .then(function(r){ if(!r.ok) throw new Error('api'); return r.json(); })
+  .then(function(data){ if(Array.isArray(data)) allNotes = data; })
+  .catch(function(){
+    return fetch('notes.json').then(function(r){ return r.ok ? r.json() : []; }).then(function(d){ if(Array.isArray(d)) allNotes = d; }).catch(function(){});
+  })
+  .finally(function(){
+    renderBriefing();
+    renderGems();
+    renderBridges();
+  });
+})();
+</script>
+<script src="credits.js"></script>
+<script>
+document.addEventListener('click', function(e){
+  var a = e.target.closest('a[href]');
+  if(!a) return;
+  var href = a.getAttribute('href');
+  if(!href || href.startsWith('#') || href.startsWith('http') || a.target === '_blank') return;
+  e.preventDefault();
+  document.body.classList.add('leaving');
+  setTimeout(function(){ window.location.href = href; }, 240);
+});
+</script>
+</body>
+</html>
