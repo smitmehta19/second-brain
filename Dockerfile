@@ -7,9 +7,12 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg git cron curl && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python deps
+# Install Python deps only — the app runs as `python -m src.main` from /app,
+# so the package itself never needs installing (and editable installs of a
+# bare pyproject break on setuptools >= 80).
 COPY pyproject.toml ./
-RUN pip install --no-cache-dir -e .
+RUN python -c "import tomllib; print('\n'.join(tomllib.load(open('pyproject.toml','rb'))['project']['dependencies']))" > /tmp/requirements.txt && \
+    pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Copy source
 COPY src/ src/
